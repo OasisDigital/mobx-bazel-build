@@ -17,11 +17,11 @@
     "test": "jest",
     "watch": "jest --watch",
     "test:mixed-versions": "jest --testRegex mixed-versions",
-    "test:all": "yarn tsc --noEmit && yarn lint && yarn jest -i && yarn test:flow && yarn test:mixed-versions",
+    "test:all": "yarn tsc --noEmit && yarn lint && yarn test --runInBand && yarn test:flow",
     "test:webpack": "node scripts/webpack-regression-tests.js",
-    "test:flow": "node_modules/.bin/flow check",
-    "test:performance": "PERSIST=true time node --expose-gc test/perf/index.js",
-    "test:ci": "yarn test:all && yarn test:performance && yarn test -i --coverage && yarn test:webpack && yarn size",
+    "test:flow": "flow check",
+    "test:performance": "cross-env PERSIST=true node --expose-gc test/perf/index.js",
+    "test:ci": "yarn test:all && yarn test:performance && yarn test --runInBand --coverage && yarn test:webpack && yarn size",
     "prettier": "prettier \"**/*.js\" \"**/*.jsx\" \"**/*.tsx\" \"**/*.ts\" \"docs/**/*.md\"",
     "_prepublish": "yarn small-build",
     "quick-build": "tsc --pretty",
@@ -60,14 +60,18 @@
     "@babel/plugin-transform-runtime": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
     "@babel/runtime": "^7.3.4",
+    "@bazel/hide-bazel-files": "^0.42.3",
+    "@bazel/typescript": "^0.42.3",
     "@types/jest": "^24.0.11",
     "@types/node": "^11.11.3",
-    "@typescript-eslint/eslint-plugin": "^1.4.2",
+    "@typescript-eslint/eslint-plugin": "^2.10.0",
+    "@typescript-eslint/parser": "^2.10.0",
     "babel-jest": "^24.5.0",
     "chalk": "^1.1.3",
     "conditional-type-checks": "^1.0.4",
     "coveralls": "^3.0.3",
-    "eslint": "^5.15.2",
+    "cross-env": "^6.0.3",
+    "eslint": "^6.7.2",
     "flow-bin": "^0.59.0",
     "fs-extra": "^7.0.1",
     "husky": "^1.3.1",
@@ -84,7 +88,6 @@
     "shelljs": "^0.8.3",
     "size-limit": "^1.3.3",
     "tape": "^4.10.1",
-    "ts-jest": "^24.0.0",
     "tslib": "^1.9.3",
     "typescript": "^3.3.3333"
   },
@@ -107,32 +110,6 @@
     "*.{ts,tsx,js,jsx,md}": [
       "prettier --write",
       "git add"
-    ]
-  },
-  "jest": {
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "tsconfig.test.json"
-      }
-    },
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest",
-      "^.+\\.jsx?$": "babel-jest"
-    },
-    "testRegex": "test/base/.*\\.(t|j)sx?$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
-    ],
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/\\./"
-    ],
-    "watchPathIgnorePatterns": [
-      "<rootDir>/node_modules/"
     ]
   },
   "husky": {

@@ -1,0 +1,76 @@
+load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary", "npm_package_bin")
+load("//:tools-bazel/jest.bzl", "jest_test")
+
+# Typescript tools need a top level target
+
+exports_files(
+    ["tsconfig.json"],
+    visibility = ["//visibility:public"],
+)
+
+npm_package_bin(
+    name = "legacy_build",
+    outs = [
+        "mobx.es6.js",
+        "mobx.js",
+        "mobx.min.js",
+        "mobx.module.js",
+        "mobx.umd.js",
+        "mobx.umd.min.js",
+    ],
+    args = [
+        "$(@D)",
+    ],
+    data = glob([
+        "src/**",
+        "lib/**",
+        "flow-typed/**",
+    ]) + [
+        "tsconfig.json",
+    ],
+    tool = ":run-legacy-build",
+)
+
+nodejs_binary(
+    name = "run-legacy-build",
+    data = [
+        "@npm//fs-extra",
+        "@npm//rollup",
+        "@npm//rollup-plugin-filesize",
+        "@npm//rollup-plugin-node-resolve",
+        "@npm//rollup-plugin-replace",
+        "@npm//rollup-plugin-terser",
+        "@npm//typescript",
+    ],
+    entry_point = "scripts/build.js",
+    visibility = ["//visibility:private"],
+)
+
+jest_test(
+    name = "jest_test",
+    srcs = glob([
+        "test/base/*.js",
+        # TODO one TS file in tests
+        # tsconfig = ":tsconfig.test.json",
+        # "@npm//@types/jest",
+    ]),
+    jest_config = ":jest.config.js",
+    deps = glob([
+        "test/utils/*.js",
+        "test/base/__snapshots__/*",
+    ]) + [
+        "//src:js_src",
+        "@npm//@babel/core",
+        "@npm//@babel/plugin-proposal-class-properties",
+        "@npm//@babel/plugin-proposal-decorators",
+        "@npm//@babel/plugin-transform-runtime",
+        "@npm//@babel/preset-env",
+        "@npm//@babel/runtime",
+        "@npm//@jest/transform",
+        "@npm//babel-jest",
+        "@npm//iterall",
+        "@npm//serializr",
+        "test/.babelrc",
+        "package.json",
+    ],
+)

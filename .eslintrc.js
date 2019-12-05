@@ -26,7 +26,7 @@ module.exports = {
         clearTimeout: "readable",
         module: "writable"
     },
-    overrides: {
+    overrides: [{
         files: ["**/*.ts"],
         rules: {
             // Things that don't play nicely with TS:
@@ -34,5 +34,5 @@ module.exports = {
             "no-unused-vars": "off",
             "no-extra-semi": "off"
         }
-    }
+    }]
 }

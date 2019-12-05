@@ -88,22 +88,29 @@ function copyFlowDefinitions() {
 }
 
 async function build() {
-    runTypeScriptBuild(".build.es5", ts.ScriptTarget.ES5, true)
-    runTypeScriptBuild(".build.es6", ts.ScriptTarget.ES2015, false)
+    const dir = path.resolve(process.argv[2])
 
-    const es5Build = path.join(".build.es5", "mobx.js")
-    const es6Build = path.join(".build.es6", "mobx.js")
+    const es5Dir = path.join(dir, ".build.es5")
+    const es6Dir = path.join(dir, ".build.es6")
+
+    fs.mkdirSync(es5Dir)
+    fs.mkdirSync(es6Dir)
+    runTypeScriptBuild(es5Dir, ts.ScriptTarget.ES5, true)
+    runTypeScriptBuild(es6Dir, ts.ScriptTarget.ES2015, false)
+
+    const es5Build = path.join(es5Dir, "mobx.js")
+    const es6Build = path.join(es6Dir, "mobx.js")
 
     await Promise.all([
-        generateBundledModule(es5Build, path.join("lib", "mobx.js"), "cjs", false),
-        generateBundledModule(es5Build, path.join("lib", "mobx.min.js"), "cjs", true),
+        generateBundledModule(es5Build, path.join(dir, "mobx.js"), "cjs", false),
+        generateBundledModule(es5Build, path.join(dir, "mobx.min.js"), "cjs", true),
 
-        generateBundledModule(es5Build, path.join("lib", "mobx.module.js"), "es", false),
+        generateBundledModule(es5Build, path.join(dir, "mobx.module.js"), "es", false),
 
-        generateBundledModule(es6Build, path.join("lib", "mobx.es6.js"), "es", false),
+        generateBundledModule(es6Build, path.join(dir, "mobx.es6.js"), "es", false),
 
-        generateBundledModule(es5Build, path.join("lib", "mobx.umd.js"), "umd", false),
-        generateBundledModule(es5Build, path.join("lib", "mobx.umd.min.js"), "umd", true)
+        generateBundledModule(es5Build, path.join(dir, "mobx.umd.js"), "umd", false),
+        generateBundledModule(es5Build, path.join(dir, "mobx.umd.min.js"), "umd", true)
     ])
     copyFlowDefinitions()
 }

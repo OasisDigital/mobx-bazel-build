@@ -1,1 +1,5 @@
 /**/package.json
+/**/*.bazel
+WORKSPACE
+tools-bazel/**/*
+.eslintrc.js

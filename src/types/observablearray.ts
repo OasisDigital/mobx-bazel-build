@@ -88,7 +88,7 @@ const arrayTraps = {
         if (typeof name === "string" && !isNaN(name as any)) {
             return arrayExtensions.get.call(target, parseInt(name))
         }
-        if (arrayExtensions.hasOwnProperty(name)) {
+        if (Object.prototype.hasOwnProperty.call(arrayExtensions, name)) {
             return arrayExtensions[name]
         }
         return target[name]
