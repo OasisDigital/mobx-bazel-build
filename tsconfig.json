@@ -17,6 +17,8 @@
         "noImplicitAny": false,
         "noImplicitThis": false,
         "experimentalDecorators": true,
+        "importHelpers": true,
+        "noEmitHelpers": true,
         "lib": ["es6"]
     },
     "include": ["src/**/*.ts"]

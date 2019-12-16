@@ -1,53 +1,92 @@
-load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary", "npm_package_bin")
+load("@build_bazel_rules_nodejs//:index.bzl", "npm_package")
+load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
+load("@npm_bazel_terser//:index.bzl", "terser_minified")
 load("//:tools-bazel/jest.bzl", "jest_test")
-
-# Typescript tools need a top level target
 
 exports_files(
     ["tsconfig.json"],
     visibility = ["//visibility:public"],
 )
 
-npm_package_bin(
-    name = "legacy_build",
-    outs = [
-        "mobx.es6.js",
-        "mobx.js",
-        "mobx.min.js",
-        "mobx.module.js",
-        "mobx.umd.js",
-        "mobx.umd.min.js",
+#         "flow-typed/**",
+#     visibility = ["//visibility:private"],
+
+[
+    rollup_bundle(
+        name = "mobx.%s" % format,
+        config_file = "rollup.config.js",
+        entry_point = "//src:mobx.ts",
+        format = format,
+        deps = [
+            "//src",
+            "//src:es5_src",
+            "@npm//@rollup/plugin-node-resolve",
+            "@npm//@rollup/plugin-replace",
+        ],
+    )
+    for format in [
+        "cjs",
+        "esm",
+        "umd",
+    ]
+]
+
+rollup_bundle(
+    name = "mobx.es6",
+    config_file = "rollup.config.js",
+    entry_point = "//src:mobx.ts",
+    format = "esm",
+    deps = [
+        "//src:es6_src",
+        "@npm//@rollup/plugin-node-resolve",
+        "@npm//@rollup/plugin-replace",
     ],
-    args = [
-        "$(@D)",
-    ],
-    data = glob([
-        "src/**",
-        "lib/**",
-        "flow-typed/**",
-    ]) + [
-        "tsconfig.json",
-    ],
-    tool = ":run-legacy-build",
 )
 
-nodejs_binary(
-    name = "run-legacy-build",
-    data = [
-        "@npm//fs-extra",
-        "@npm//rollup",
-        "@npm//rollup-plugin-filesize",
-        "@npm//rollup-plugin-node-resolve",
-        "@npm//rollup-plugin-replace",
-        "@npm//rollup-plugin-terser",
-        "@npm//typescript",
-    ],
-    entry_point = "scripts/build.js",
-    visibility = ["//visibility:private"],
+terser_minified(
+    name = "mobx.cjs.min",
+    src = ":mobx.cjs",
 )
 
+terser_minified(
+    name = "mobx.umd.min",
+    src = ":mobx.umd",
+)
+
+npm_package(
+    name = "mobx",
+    srcs = ["package.json"],
+    replacements = {"//internal/": "//"},
+    deps = [
+        "LICENSE",
+        ":mobx.cjs.js",  # was lib/mobx.js
+        ":mobx.cjs.min",  # was lib/mobx.min.js
+        ":mobx.es6.js",  # ES6 in ES Modules
+        ":mobx.esm.js",  # was lib/mobx.module.js
+        ":mobx.umd.js",  # was lib/mobx.umd.js
+        ":mobx.umd.min",  # was lib/mobx.umd.min.js
+        "//src",
+    ],
+)
+
+# pkg_tar(
+#     name = "mobx_archive",
+#     srcs = [":mobx"],
+#     extension = "tar.gz",
+#     strip_prefix = "./mobx",
+#     tags = ["manual"],
+# )
+
+# function copyFlowDefinitions() {
+#     console.log("Copying flowtype definitions")
+#     fs.copyFileSync("flow-typed/mobx.js", "lib/mobx.js.flow")
+#     console.log("Copying of flowtype definitions done")
+# }
+
+# #############################################################
 jest_test(
-    name = "jest_test",
+    name = "js_jest_tests",
+    size = "small",
     srcs = glob([
         "test/base/*.js",
         # TODO one TS file in tests
@@ -59,7 +98,7 @@ jest_test(
         "test/utils/*.js",
         "test/base/__snapshots__/*",
     ]) + [
-        "//src:js_src",
+        "//src:es5_src",
         "@npm//@babel/core",
         "@npm//@babel/plugin-proposal-class-properties",
         "@npm//@babel/plugin-proposal-decorators",
@@ -74,3 +113,15 @@ jest_test(
         "package.json",
     ],
 )
+
+# [
+#     rollup_bundle(
+#         name = "bundle.%s" % format,
+#         entry_point = "foo.js",
+#         format = format,
+#     )
+#     for format in [
+#         "cjs",
+#         "umd",
+#     ]
+# ]

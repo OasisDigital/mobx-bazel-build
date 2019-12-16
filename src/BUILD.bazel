@@ -3,18 +3,25 @@ package(default_visibility = ["//visibility:public"])
 load("@npm_bazel_typescript//:index.bzl", "ts_library")
 
 ts_library(
-    name = "dts",
+    name = "src",
     srcs = glob([
         "**/*.ts",
     ]),
     tsconfig = "//:tsconfig.json",
     deps = [
         "@npm//@types/node",
+        "@npm//tslib",
     ],
 )
 
 filegroup(
-    name = "js_src",
-    srcs = [":dts"],
-    output_group = "es5_sources",
+    name = "es5_src",
+    srcs = [":src"],
+    output_group = "es5_sources",  # devmode
+)
+
+filegroup(
+    name = "es6_src",
+    srcs = [":src"],
+    output_group = "es6_sources",  # prodmode
 )

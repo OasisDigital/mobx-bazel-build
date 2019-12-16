@@ -15,22 +15,22 @@
 #    tool = "@npm-website//docusaurus/bin:docusaurus-build",
 #)
 
-genrule(
-    name = "build_docs",
-    srcs = glob([
-        "core/**",
-        "i18n/**",
-        "static/**",
-    ]) + [
-        "sidebars.json",
-        "siteConfig.js",
-    ],
-    outs = [
-        "mobx",
-        "i18n"
-    ],
-    cmd = "cd website && node_modules/.bin/docusaurus-build && cp -r build/mobx ../$(@D) && cp -r i18n ../$(@D)",
-    tools = [
-        "@nodejs//:node",
-    ],
-)
+# genrule(
+#     name = "build_docs",
+#     srcs = glob([
+#         "core/**",
+#         "i18n/**",
+#         "static/**",
+#     ]) + [
+#         "sidebars.json",
+#         "siteConfig.js",
+#     ],
+#     outs = [
+#         "mobx",
+#         "i18n"
+#     ],
+#     cmd = "cd website && node_modules/.bin/docusaurus-build && cp -r build/mobx ../$(@D) && cp -r i18n ../$(@D)",
+#     tools = [
+#         "@nodejs//:node",
+#     ],
+# )
