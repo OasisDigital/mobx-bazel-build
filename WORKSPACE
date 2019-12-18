@@ -41,12 +41,12 @@ load("@npm_bazel_typescript//:index.bzl", "ts_setup_workspace")
 
 ts_setup_workspace()
 
-# http_archive(
-#     name = "bazel_skylib",
-#     sha256 = "97e70364e9249702246c0e9444bccdc4b847bed1eb03c5a3ece4f83dfe6abc44",
-#     url = "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz",
-# )
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "97e70364e9249702246c0e9444bccdc4b847bed1eb03c5a3ece4f83dfe6abc44",
+    url = "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz",
+)
 
-# load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 
-# bazel_skylib_workspace()
+bazel_skylib_workspace()

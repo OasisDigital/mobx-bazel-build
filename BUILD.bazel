@@ -1,15 +1,13 @@
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_package")
+load("@build_bazel_rules_nodejs//:index.bzl", "npm_package", "npm_package_bin")
 load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
 load("@npm_bazel_terser//:index.bzl", "terser_minified")
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("//:tools-bazel/jest.bzl", "jest_test")
 
 exports_files(
     ["tsconfig.json"],
     visibility = ["//visibility:public"],
 )
-
-#         "flow-typed/**",
-#     visibility = ["//visibility:private"],
 
 [
     rollup_bundle(
@@ -53,6 +51,12 @@ terser_minified(
     src = ":mobx.umd",
 )
 
+copy_file(
+    name = "mobx-flow",
+    src = "flow-typed/mobx.js",
+    out = ":mobx.js.flow",
+)
+
 npm_package(
     name = "mobx",
     srcs = ["package.json"],
@@ -65,6 +69,7 @@ npm_package(
         ":mobx.esm.js",  # was lib/mobx.module.js
         ":mobx.umd.js",  # was lib/mobx.umd.js
         ":mobx.umd.min",  # was lib/mobx.umd.min.js
+        ":mobx-flow",  # Not pointed to by package.json directly
         "//src",
     ],
 )
@@ -77,13 +82,21 @@ npm_package(
 #     tags = ["manual"],
 # )
 
-# function copyFlowDefinitions() {
-#     console.log("Copying flowtype definitions")
-#     fs.copyFileSync("flow-typed/mobx.js", "lib/mobx.js.flow")
-#     console.log("Copying of flowtype definitions done")
-# }
-
 # #############################################################
+
+npm_package_bin(
+    name = "check_flow",
+    args = ["check"],
+    data = glob([
+        "src/**",
+        "flow-typed/**",
+        "test/flow/**",
+    ]) + [".flowconfig"],
+    output_dir = True,
+    package = "flow-bin",
+    package_bin = "flow",
+)
+
 jest_test(
     name = "js_jest_tests",
     size = "small",
@@ -113,15 +126,3 @@ jest_test(
         "package.json",
     ],
 )
-
-# [
-#     rollup_bundle(
-#         name = "bundle.%s" % format,
-#         entry_point = "foo.js",
-#         format = format,
-#     )
-#     for format in [
-#         "cjs",
-#         "umd",
-#     ]
-# ]
