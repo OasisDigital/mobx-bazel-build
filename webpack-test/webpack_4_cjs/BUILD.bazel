@@ -1,0 +1,39 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "npm_package_bin")
+
+npm_package_bin(
+    name = "webpack",
+    outs = ["bundle.js"],
+    args = [
+        "--config",
+        "$(location webpack.config.js)",
+        "--entry",
+        "./$(location index.js)",
+        "--output-path",
+        "$(@D)",
+        "--resolve-alias",
+        "mobx=../../$(location //:mobx_untainted)",  # Relative to the entry point
+    ],
+    data = [
+        "index.js",
+        "webpack.config.js",
+        "//:mobx_untainted",
+        "@npm_webpack_4_cjs//webpack-cli",
+    ],
+    tool = "@npm_webpack_4_cjs//webpack/bin:webpack",
+)
+
+nodejs_binary(
+    name = "run",
+    data = [
+        ":webpack",
+    ],
+    entry_point = ":webpack",
+    visibility = ["//visibility:public"],
+)
+
+sh_test(
+    name = "test1",
+    size = "small",
+    srcs = [":run.sh"],
+    data = ["run"],
+)

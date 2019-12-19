@@ -1,8 +1,9 @@
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_package", "npm_package_bin")
+load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin", "pkg_npm")
 load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
 load("@npm_bazel_terser//:index.bzl", "terser_minified")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("//:tools-bazel/jest.bzl", "jest_test")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 exports_files(
     ["tsconfig.json"],
@@ -57,10 +58,10 @@ copy_file(
     out = ":mobx.js.flow",
 )
 
-npm_package(
+pkg_npm(
     name = "mobx",
     srcs = ["package.json"],
-    replacements = {"//internal/": "//"},
+    visibility = ["//visibility:public"],
     deps = [
         "LICENSE",
         ":mobx.cjs.js",  # was lib/mobx.js
@@ -74,13 +75,19 @@ npm_package(
     ],
 )
 
-# pkg_tar(
-#     name = "mobx_archive",
-#     srcs = [":mobx"],
-#     extension = "tar.gz",
-#     strip_prefix = "./mobx",
-#     tags = ["manual"],
-# )
+filegroup(
+    name = "mobx_untainted",
+    srcs = [":mobx"],
+    visibility = ["//visibility:public"],
+)
+
+pkg_tar(
+    name = "mobx_archive",
+    srcs = [":mobx"],
+    extension = "tar.gz",
+    strip_prefix = "./mobx",
+    visibility = ["//visibility:public"],
+)
 
 # #############################################################
 
@@ -122,6 +129,7 @@ jest_test(
         "@npm//babel-jest",
         "@npm//iterall",
         "@npm//serializr",
+        "@npm//tslib",
         "test/.babelrc",
         "package.json",
     ],

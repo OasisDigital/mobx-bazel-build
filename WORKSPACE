@@ -5,18 +5,28 @@ workspace(
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+http_archive(
+    name = "rules_pkg",
+    sha256 = "4ba8f4ab0ff85f2484287ab06c0d871dcb31cc54d439457d28fd4ae14b18450a",
+    url = "https://github.com/bazelbuild/rules_pkg/releases/download/0.2.4/rules_pkg-0.2.4.tar.gz",
+)
+
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+
+rules_pkg_dependencies()
+
 # Javascript / Typescript tooling
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "a54b2511d6dae42c1f7cdaeb08144ee2808193a088004fc3b464a04583d5aa2e",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/0.42.3/rules_nodejs-0.42.3.tar.gz"],
+    sha256 = "3887b948779431ac443e6a64f31b9e1e17b8d386a31eebc50ec1d9b0a6cabd2b",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/1.0.0/rules_nodejs-1.0.0.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "yarn_install")
 
 node_repositories(
-    # name = "nodejs",
+    # name = "nodejs", # This is the built in name, included in this comment for clarity.
 )
 
 yarn_install(
@@ -50,3 +60,26 @@ http_archive(
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 
 bazel_skylib_workspace()
+
+# testing sandboxes
+
+yarn_install(
+    name = "npm_webpack_3_cjs",
+    package_json = "//webpack-test/webpack_3_cjs:package.json",
+    symlink_node_modules = False,
+    yarn_lock = "//webpack-test/webpack_3_cjs:yarn.lock",
+)
+
+yarn_install(
+    name = "npm_webpack_4_cjs",
+    package_json = "//webpack-test/webpack_4_cjs:package.json",
+    symlink_node_modules = False,
+    yarn_lock = "//webpack-test/webpack_4_cjs:yarn.lock",
+)
+
+yarn_install(
+    name = "npm_webpack_4_esm",
+    package_json = "//webpack-test/webpack_4_esm:package.json",
+    symlink_node_modules = False,
+    yarn_lock = "//webpack-test/webpack_4_esm:yarn.lock",
+)

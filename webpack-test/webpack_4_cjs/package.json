@@ -1,0 +1,8 @@
+{
+	"name": "mobx-webpack-build",
+	"version": "0.0.1",
+	"devDependencies": {
+		"webpack": "^4",
+		"webpack-cli": "^3"
+	}
+}
