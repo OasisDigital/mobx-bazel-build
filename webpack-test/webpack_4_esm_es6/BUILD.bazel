@@ -11,7 +11,7 @@ npm_package_bin(
         "--output-path",
         "$(@D)",
         "--resolve-alias",
-        "mobx=../../$(location //:mobx_untainted)",  # Relative to the entry point
+        "mobx=../../$(location //:mobx_untainted)/mobx.es6.js",  # Relative to the entry point
     ],
     data = [
         "index.js",

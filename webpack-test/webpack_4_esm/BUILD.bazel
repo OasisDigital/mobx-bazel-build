@@ -17,9 +17,9 @@ npm_package_bin(
         "index.js",
         "webpack.config.js",
         "//:mobx_untainted",
-        "@npm_webpack_4_esm//webpack-cli",
+        "@npm_webpack_4//webpack-cli",
     ],
-    tool = "@npm_webpack_4_esm//webpack/bin:webpack",
+    tool = "@npm_webpack_4//webpack/bin:webpack",
 )
 
 nodejs_binary(
@@ -28,11 +28,10 @@ nodejs_binary(
         ":webpack",
     ],
     entry_point = ":webpack",
-    visibility = ["//visibility:public"],
 )
 
 sh_test(
-    name = "test1",
+    name = "test",
     size = "small",
     srcs = [":run.sh"],
     data = ["run"],

@@ -19,7 +19,7 @@ npm_package_bin(
         "webpack.config.js",
         "//:mobx_untainted",
     ],
-    tool = "@npm_webpack_3_cjs//webpack/bin:webpack",
+    tool = "@npm_webpack_3//webpack/bin:webpack",
 )
 
 nodejs_binary(
@@ -28,11 +28,10 @@ nodejs_binary(
         ":webpack",
     ],
     entry_point = ":webpack",
-    visibility = ["//visibility:public"],
 )
 
 sh_test(
-    name = "test1",
+    name = "test",
     size = "small",
     srcs = [":run.sh"],
     data = ["run"],

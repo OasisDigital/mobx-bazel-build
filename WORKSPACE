@@ -64,22 +64,15 @@ bazel_skylib_workspace()
 # testing sandboxes
 
 yarn_install(
-    name = "npm_webpack_3_cjs",
-    package_json = "//webpack-test/webpack_3_cjs:package.json",
+    name = "npm_webpack_3",
+    package_json = "//webpack-test/v3:package.json",
     symlink_node_modules = False,
-    yarn_lock = "//webpack-test/webpack_3_cjs:yarn.lock",
+    yarn_lock = "//webpack-test/v3:yarn.lock",
 )
 
 yarn_install(
-    name = "npm_webpack_4_cjs",
-    package_json = "//webpack-test/webpack_4_cjs:package.json",
+    name = "npm_webpack_4",
+    package_json = "//webpack-test/v4:package.json",
     symlink_node_modules = False,
-    yarn_lock = "//webpack-test/webpack_4_cjs:yarn.lock",
-)
-
-yarn_install(
-    name = "npm_webpack_4_esm",
-    package_json = "//webpack-test/webpack_4_esm:package.json",
-    symlink_node_modules = False,
-    yarn_lock = "//webpack-test/webpack_4_esm:yarn.lock",
+    yarn_lock = "//webpack-test/v4:yarn.lock",
 )
