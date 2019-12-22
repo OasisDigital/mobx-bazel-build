@@ -2,11 +2,14 @@ load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin", "pkg_npm")
 load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
 load("@npm_bazel_terser//:index.bzl", "terser_minified")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
-load("//:tools-bazel/jest.bzl", "jest_test")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 exports_files(
-    ["tsconfig.json"],
+    [
+        "tsconfig.json",
+        "tsconfig.test.json",
+        "package.json",
+    ],
     visibility = ["//visibility:public"],
 )
 
@@ -89,8 +92,6 @@ pkg_tar(
     visibility = ["//visibility:public"],
 )
 
-# #############################################################
-
 npm_package_bin(
     name = "check_flow",
     args = ["check"],
@@ -102,35 +103,4 @@ npm_package_bin(
     output_dir = True,
     package = "flow-bin",
     package_bin = "flow",
-)
-
-jest_test(
-    name = "js_jest_tests",
-    size = "small",
-    srcs = glob([
-        "test/base/*.js",
-        # TODO one TS file in tests
-        # tsconfig = ":tsconfig.test.json",
-        # "@npm//@types/jest",
-    ]),
-    jest_config = ":jest.config.js",
-    deps = glob([
-        "test/utils/*.js",
-        "test/base/__snapshots__/*",
-    ]) + [
-        "//src:es5_src",
-        "@npm//@babel/core",
-        "@npm//@babel/plugin-proposal-class-properties",
-        "@npm//@babel/plugin-proposal-decorators",
-        "@npm//@babel/plugin-transform-runtime",
-        "@npm//@babel/preset-env",
-        "@npm//@babel/runtime",
-        "@npm//@jest/transform",
-        "@npm//babel-jest",
-        "@npm//iterall",
-        "@npm//serializr",
-        "@npm//tslib",
-        "test/.babelrc",
-        "package.json",
-    ],
 )

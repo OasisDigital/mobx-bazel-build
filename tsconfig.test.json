@@ -3,6 +3,5 @@
     "compilerOptions": {
         "lib": ["esnext"],
         "noUnusedLocals": false
-    },
-    "include": ["src/**/*.ts", "test/**/*.ts"]
+    }
 }

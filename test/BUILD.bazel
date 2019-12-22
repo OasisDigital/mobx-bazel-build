@@ -1,0 +1,56 @@
+package(default_visibility = ["//visibility:public"])
+
+load("//:tools-bazel/jest.bzl", "jest_test")
+load("@npm_bazel_typescript//:index.bzl", "ts_library")
+
+ts_library(
+    name = "base",
+    srcs = glob([
+        "base/**/*.ts",
+    ]),
+    tsconfig = "//:tsconfig.test.json",
+    deps = [
+        "//src",
+        "@npm//@types/jest",
+        "@npm//@types/node",
+        "@npm//conditional-type-checks",
+        "@npm//tslib",
+    ],
+)
+
+filegroup(
+    name = "ts_as_es5",
+    srcs = [":base"],
+    output_group = "es5_sources",  # devmode
+)
+
+jest_test(
+    name = "js_jest_tests",
+    size = "small",
+    srcs = glob([
+        "base/*.js",
+    ]) + [
+        ":ts_as_es5",
+    ],
+    jest_config = ":jest.config.js",
+    deps = glob([
+        "utils/*.js",
+        "base/__snapshots__/*",
+    ]) + [
+        "//src:es5_src",
+        "@npm//@babel/core",
+        "@npm//@babel/plugin-proposal-class-properties",
+        "@npm//@babel/plugin-proposal-decorators",
+        "@npm//@babel/plugin-transform-runtime",
+        "@npm//@babel/preset-env",
+        "@npm//@babel/runtime",
+        "@npm//@jest/transform",
+        "@npm//babel-jest",
+        "@npm//iterall",
+        "@npm//serializr",
+        "@npm//conditional-type-checks",
+        "@npm//tslib",
+        ".babelrc",
+        "//:package.json",
+    ],
+)
