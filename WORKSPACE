@@ -5,16 +5,6 @@ workspace(
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-http_archive(
-    name = "rules_pkg",
-    sha256 = "4ba8f4ab0ff85f2484287ab06c0d871dcb31cc54d439457d28fd4ae14b18450a",
-    url = "https://github.com/bazelbuild/rules_pkg/releases/download/0.2.4/rules_pkg-0.2.4.tar.gz",
-)
-
-load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
-
-rules_pkg_dependencies()
-
 # Javascript / Typescript tooling
 
 http_archive(
@@ -34,13 +24,6 @@ yarn_install(
     package_json = "//:package.json",
     symlink_node_modules = True,
     yarn_lock = "//:yarn.lock",
-)
-
-yarn_install(
-    name = "npm-website",
-    package_json = "//website:package.json",
-    symlink_node_modules = False,
-    yarn_lock = "//website:yarn.lock",
 )
 
 load("@npm//:install_bazel_dependencies.bzl", "install_bazel_dependencies")

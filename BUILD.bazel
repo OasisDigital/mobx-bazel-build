@@ -2,7 +2,6 @@ load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin", "pkg_npm")
 load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
 load("@npm_bazel_terser//:index.bzl", "terser_minified")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
-load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 exports_files(
     [
@@ -63,10 +62,12 @@ copy_file(
 
 pkg_npm(
     name = "mobx",
-    srcs = ["package.json"],
+    srcs = [
+        "LICENSE",
+        "package.json",
+    ],
     visibility = ["//visibility:public"],
     deps = [
-        "LICENSE",
         ":mobx.cjs.js",  # was lib/mobx.js
         ":mobx.cjs.min",  # was lib/mobx.min.js
         ":mobx.es6.js",  # ES6 in ES Modules
@@ -81,14 +82,6 @@ pkg_npm(
 filegroup(
     name = "mobx_untainted",
     srcs = [":mobx"],
-    visibility = ["//visibility:public"],
-)
-
-pkg_tar(
-    name = "mobx_archive",
-    srcs = [":mobx"],
-    extension = "tar.gz",
-    strip_prefix = "./mobx",
     visibility = ["//visibility:public"],
 )
 

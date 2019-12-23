@@ -1,4 +1,4 @@
-load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "npm_package_bin")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_test", "npm_package_bin")
 
 npm_package_bin(
     name = "webpack",
@@ -22,17 +22,9 @@ npm_package_bin(
     tool = "@npm_webpack_4//webpack/bin:webpack",
 )
 
-nodejs_binary(
-    name = "run",
-    data = [
-        ":webpack",
-    ],
-    entry_point = ":webpack",
-)
-
-sh_test(
+nodejs_test(
     name = "test",
     size = "small",
-    srcs = [":run.sh"],
-    data = ["run"],
+    data = [":webpack"],
+    entry_point = ":webpack",
 )

@@ -1,3 +1,15 @@
+# MobX - Bazel build conversion example
+
+This is an example of converting an existing, nontrivial JavaScript project to
+build via Bazel, by the team at Oasis Digital.
+
+A blog post or video explanation will be forthcoming.
+
+Note that this is **not** intended to PR or merge upstream to MobX; for its
+current audience, MobX is well served by a "pure JavaScript" build process.
+
+<hr>
+
 <img src="docs/assets/mobx.png" alt="logo" height="120" align="right" />
 
 # MobX

@@ -17,11 +17,11 @@ ts_library(
 filegroup(
     name = "es5_src",
     srcs = [":src"],
-    output_group = "es5_sources",  # devmode
+    output_group = "es5_sources",  # "devmode"
 )
 
 filegroup(
     name = "es6_src",
     srcs = [":src"],
-    output_group = "es6_sources",  # prodmode
+    output_group = "es6_sources",  # "prodmode"
 )
